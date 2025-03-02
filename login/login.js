@@ -249,7 +249,7 @@ async function monitorChats() {
         else if (mimeType.includes("video")) fileName += ".mp4";
         else if (mimeType.includes("gif")) fileName += ".gif";
         else if (mimeType.includes("audio")) fileName += ".mp3";
-        else fileName += ".zip";
+        else fileName += ".mp4";
       } else return;
 
       console.log(`📥 Saving media from Chat ID: ${chatId} (${fileType})`);
@@ -272,7 +272,7 @@ async function keepAlive() {
       console.error(`❌ Error: ${error.message}`);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 60000)); // Keep alive every 60 seconds
+    await new Promise(resolve => setTimeout(resolve, 10000)); // Keep alive every 60 seconds
   }
 }
 
