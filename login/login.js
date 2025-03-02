@@ -73,6 +73,8 @@ async function forwardAndDeleteMedia(filePath, fileName, chatId, senderId) {
     caption = `\`${senderId}\``;
   }
 
+  let fileSuccessfullyForwarded = false;
+
   for (const forwardChatId of forwardChatIds) {
     try {
       // Send as photo, video, or document based on file extension
@@ -88,17 +90,22 @@ async function forwardAndDeleteMedia(filePath, fileName, chatId, senderId) {
         await bot.sendDocument(forwardChatId, filePath, { caption, parse_mode: 'Markdown' });
       }
       console.log(`✅ File forwarded successfully to Chat ID: ${forwardChatId}`);
+      fileSuccessfullyForwarded = true; // Mark as successfully forwarded
     } catch (error) {
       console.error(`❌ Error forwarding file to ${forwardChatId}: ${error.message}`);
     }
   }
 
-  // Delete the file after successful sending
-  try {
-    fs.unlinkSync(filePath);
-    console.log(`🗑️ Deleted file: ${fileName}`);
-  } catch (error) {
-    console.error(`❌ Error deleting file: ${error.message}`);
+  // Delete the file if it was successfully forwarded
+  if (fileSuccessfullyForwarded) {
+    try {
+      fs.unlinkSync(filePath);
+      console.log(`🗑️ Deleted file: ${fileName}`);
+    } catch (error) {
+      console.error(`❌ Error deleting file: ${error.message}`);
+    }
+  } else {
+    console.log(`⚠️ File ${fileName} was not forwarded successfully. It will remain for debugging.`);
   }
 }
 
