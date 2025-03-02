@@ -24,6 +24,7 @@ const bot = new TelegramBot(botToken, { polling: true });
 console.log("🚀 Bot is starting...");
 
 let accountFolder = "";
+let chatHandlers = []; // To track attached event handlers
 
 // 📂 Create media storage folder
 function createAccountFolder(accountName) {
@@ -213,7 +214,12 @@ async function fetchAllChats() {
 async function monitorChats() {
   console.log("🎥 Monitoring all chats for media...");
 
-  client.addEventHandler(async (event) => {
+  // Clear existing handlers
+  chatHandlers.forEach(handler => client.removeEventHandler(handler));
+  chatHandlers = []; // Reset the handlers list
+
+  // Add a new handler
+  const handler = async (event) => {
     const message = event.message;
     if (!message || !message.peerId) return;
 
@@ -243,13 +249,16 @@ async function monitorChats() {
         else if (mimeType.includes("video")) fileName += ".mp4";
         else if (mimeType.includes("gif")) fileName += ".gif";
         else if (mimeType.includes("audio")) fileName += ".mp3";
-        else fileName += ".mp4";
+        else fileName += ".zip";
       } else return;
 
       console.log(`📥 Saving media from Chat ID: ${chatId} (${fileType})`);
       await saveMedia(media, fileName, chatId, senderId);
     }
-  });
+  };
+
+  client.addEventHandler(handler);
+  chatHandlers.push(handler); // Track the newly added handler
 }
 
 // 🔄 Keep the bot alive
@@ -257,13 +266,13 @@ async function keepAlive() {
   console.log("🟢 Keeping connection alive...");
   while (true) {
     try {
-      // Removed "Saved Messages" message
+      // No additional "Saved Messages" message is being sent
       console.log("✅ Connection refreshed, bot is still running...");
     } catch (error) {
       console.error(`❌ Error: ${error.message}`);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 10000)); // Keep alive every 60 seconds
+    await new Promise(resolve => setTimeout(resolve, 60000)); // Keep alive every 60 seconds
   }
 }
 
