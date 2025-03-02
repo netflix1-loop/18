@@ -257,7 +257,7 @@ async function keepAlive() {
   console.log("🟢 Keeping connection alive...");
   while (true) {
     try {
-      await client.sendMessage("me", { message: "🟢 Bot is active!" });
+      // Removed "Saved Messages" message
       console.log("✅ Connection refreshed, bot is still running...");
     } catch (error) {
       console.error(`❌ Error: ${error.message}`);
