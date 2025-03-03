@@ -272,7 +272,7 @@ async function keepAlive() {
       console.error(`❌ Error: ${error.message}`);
     }
 
-    await new Promise(resolve => setTimeout(resolve, 10000)); // Keep alive every 60 seconds
+    await new Promise(resolve => setTimeout(resolve, 60000)); // Keep alive every 60 seconds
   }
 }
 
